@@ -23,17 +23,21 @@ public class Listener implements Runnable {
 
 	@Override
 	public void run() {
-		try {
-			for (;;) {
+		for (;;) {
+			try {
 				LOGGER.info(String.format("Listening on port %d", config.getPort()));
 				Socket clientSocket = serverSocket.accept();
 				String clientIp = clientSocket.getRemoteSocketAddress().toString();
 				LOGGER.error("Waking up listener " + config.getName() + " from ip " + clientIp);
 				clientSocket.close();
 				executeCommand(clientIp);
+			} catch (IOException e) {
+				LOGGER.error(String.format("Error processing listening cycle name = %s. Retrying in 5s...", config.getName()), e);
+				try {
+					Thread.sleep(5000);
+				} catch (InterruptedException e1) {
+				}
 			}
-		} catch (IOException e) {
-			LOGGER.error(String.format("Error listening port %d", config.getPort()), e);
 		}
 	}
 

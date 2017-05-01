@@ -19,10 +19,17 @@ public class Monitor implements Runnable {
 
 	@Override
 	public void run() {
+		InetAddress inet;
 		try {
 			LOGGER.info(String.format("Monitoring ip on port %s", config.getAddress()));
-			InetAddress inet = InetAddress.getByName(config.getAddress());
-			for (;;) {
+			inet = InetAddress.getByName(config.getAddress());
+		} catch (IOException e) {
+			LOGGER.error(String.format("Error monitoring host %s", config.getAddress()), e);
+			return;
+		}
+
+		for (;;) {
+			try {
 				boolean isReachable = inet.isReachable(config.getTimeout());
 				if (!isReachable) {
 					LOGGER.error(String.format("Unreachable node detected %s", config.getAddress()));
@@ -34,9 +41,13 @@ public class Monitor implements Runnable {
 					Thread.sleep(config.getRefreshDelay());
 				} catch (InterruptedException e) {
 				}
+			} catch (Exception e) {
+				LOGGER.error(String.format("Error processing monitoring cycle name = %s. Retrying in 5s...", config.getName()), e);
+				try {
+					Thread.sleep(5000);
+				} catch (InterruptedException e1) {
+				}
 			}
-		} catch (IOException e) {
-			LOGGER.error(String.format("Error monitoring host %s", config.getAddress()), e);
 		}
 	}
 
