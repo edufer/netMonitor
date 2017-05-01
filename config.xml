@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<listeners>
+		<listener>
+			<name>Listerner1</name>
+			<port>14070</port>
+			<command>c:/temp/echo.bat</command>
+		</listener>
+		<listener>
+			<name>Listerner2</name>
+			<port>14071</port>
+			<command>c:/temp/echo.bat</command>
+		</listener>
+	</listeners>
+</config>
