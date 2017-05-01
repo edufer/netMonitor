@@ -24,6 +24,8 @@ public class Configuration {
 	
 	private ArrayList<ListenerConfig> listeners = new ArrayList<>();
 	
+	private ArrayList<MonitorConfig> monitors = new ArrayList<>();
+
 	/**
 	 * The configuration constructor
 	 * @param configPath The configuration file path
@@ -42,6 +44,77 @@ public class Configuration {
 		
 		doc.getDocumentElement().normalize();
 		
+		loadListeners(doc);
+		
+		loadMonitors(doc);
+	}
+
+	/**
+	 * @param doc
+	 * @throws Exception 
+	 */
+	private void loadMonitors(Document doc) throws Exception {
+		NodeList monitors = doc.getElementsByTagName("monitor");
+		
+		LOGGER.info("Loading " + monitors.getLength() + " monitors");
+		
+		for (int i=0; i<monitors.getLength(); ++i) {
+			Node monitor = monitors.item(i);
+			NodeList entries = monitor.getChildNodes();
+			
+			String name = null;
+			long refreshDelay = -1;
+			int timeout = -1;
+			String address = null;
+			String commandPath = null;
+			for (int j=0; j<entries.getLength(); ++j) {
+				Node entry = entries.item(j);
+				String nodeName = entry.getNodeName();
+				if (nodeName.equals("name")) {
+					name = entry.getTextContent();
+				}
+				else if (nodeName.equals("refreshDelay")) {
+					refreshDelay = Long.valueOf(entry.getTextContent());
+				}
+				else if (nodeName.equals("timeout")) {
+					timeout = Integer.valueOf(entry.getTextContent());
+				}
+				else if (nodeName.equals("address")) {
+					address = entry.getTextContent();
+				}
+				else if (nodeName.equals("command")) {
+					commandPath = entry.getTextContent();
+				}
+			}
+			if (refreshDelay == -1) {
+				throw new Exception("Missing monitor refresh delay entry in configuration");
+			}
+			if (timeout == -1) {
+				throw new Exception("Missing monitor timeout entry in configuration");
+			}
+			if (name == null) {
+				throw new Exception("Missing monitor name entry in configuration");
+			}
+			if (address == null) {
+				throw new Exception("Missing monitor address entry in configuration");
+			}
+			if (commandPath == null) {
+				throw new Exception("Missing monitor commandPath entry in configuration");
+			}
+			
+			addMonitor(name, refreshDelay, timeout, address, commandPath);
+		}
+	}
+
+	private void addMonitor(String name, long refreshDelay, int timeout, String address, String commandPath) {
+		monitors.add(new MonitorConfig(name, refreshDelay, timeout, address, commandPath));
+	}
+
+	/**
+	 * @param doc
+	 * @throws Exception
+	 */
+	private void loadListeners(Document doc) throws Exception {
 		NodeList listeners = doc.getElementsByTagName("listener");
 		
 		LOGGER.info("Loading " + listeners.getLength() + " listeners");
@@ -78,7 +151,6 @@ public class Configuration {
 			
 			addListener(name, port, commandPath);
 		}
-		
 	}
 
 	private void addListener(String name, int port, String commandPath) {
@@ -90,5 +162,12 @@ public class Configuration {
 	 */
 	public ArrayList<ListenerConfig> getListeners() {
 		return listeners;
+	}
+
+	/**
+	 * @return the monitors
+	 */
+	public ArrayList<MonitorConfig> getMonitors() {
+		return monitors;
 	}
 }

@@ -12,6 +12,7 @@ public class NetMonitor {
 	private Configuration configuration;
 	
 	private ArrayList<Listener> listeners = new ArrayList<>();
+	private ArrayList<Monitor> monitors = new ArrayList<>();
 
 	public static void main(String[] args) {
 		
@@ -33,6 +34,15 @@ public class NetMonitor {
 		LOGGER.info("Starting NetMonitor");
 		configuration = new Configuration(configFilePath);
 		startListeners();
+		startMonitors();
+	}
+
+	private void startMonitors() throws IOException {
+		ArrayList<MonitorConfig> MonitorsConfig = configuration.getMonitors();
+		for (MonitorConfig monitorConfig: MonitorsConfig) {
+			Monitor monitor = new Monitor(monitorConfig);
+			monitors.add(monitor);
+		}
 	}
 
 	private void startListeners() throws IOException {

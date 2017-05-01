@@ -28,12 +28,12 @@ public class Listener implements Runnable {
 				LOGGER.info(String.format("Listening on port %d", config.getPort()));
 				Socket clientSocket = serverSocket.accept();
 				String clientIp = clientSocket.getRemoteSocketAddress().toString();
-				LOGGER.info("Waking up listener " + config.getName() + " from ip " + clientIp);
+				LOGGER.error("Waking up listener " + config.getName() + " from ip " + clientIp);
 				clientSocket.close();
 				executeCommand(clientIp);
 			}
 		} catch (IOException e) {
-			LOGGER.error(String.format("Error monitoring port %d", config.getPort()), e);
+			LOGGER.error(String.format("Error listening port %d", config.getPort()), e);
 		}
 	}
 

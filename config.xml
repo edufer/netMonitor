@@ -12,4 +12,13 @@
 			<command>c:/temp/echo.bat</command>
 		</listener>
 	</listeners>
+	<monitors>
+		<monitor>
+			<name>Monitor1</name>
+			<refreshDelay>5000</refreshDelay>
+			<timeout>5000</timeout>
+			<address>192.168.1.1</address>
+			<command>c:/temp/echo.bat</command>
+		</monitor>
+	</monitors>
 </config>
