@@ -25,13 +25,18 @@ public class Listener implements Runnable {
 	@Override
 	public void run() {
 		for (;;) {
+			Socket clientSocket = null;
 			try {
 				LOGGER.info(String.format("Listening on port %d", config.getPort()));
-				Socket clientSocket = serverSocket.accept();
+				clientSocket = serverSocket.accept();
 				String clientIp = clientSocket.getRemoteSocketAddress().toString();
+				
 				LOGGER.error("Waking up listener " + config.getName() + " from ip " + clientIp);
 				String inputData = readInput(clientSocket, clientIp);
-				clientSocket.close();
+				
+				closeSocket(clientSocket);
+				clientSocket = null;
+				
 				executeCommand(clientIp, inputData);
 			} catch (IOException e) {
 				LOGGER.error(String.format("Error processing listening cycle name = %s. Retrying in 5s...", config.getName()), e);
@@ -40,7 +45,20 @@ public class Listener implements Runnable {
 				} catch (InterruptedException e1) {
 				}
 			}
+			finally {
+				closeSocket(clientSocket);
+				clientSocket = null;
+			}
 		}
+	}
+
+	private void closeSocket(Socket clientSocket) {
+		if (clientSocket == null) {
+			return;
+		}
+		try {
+			clientSocket.close();
+		} catch (IOException e) {}
 	}
 
 	private String readInput(Socket clientSocket, String clientIp) throws IOException {
