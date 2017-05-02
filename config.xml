@@ -4,12 +4,12 @@
 		<listener>
 			<name>Listerner1</name>
 			<port>14070</port>
-			<command>c:/temp/echo.bat</command>
+			<command>cmd /c start /wait c:/temp/echo.bat</command>
 		</listener>
 		<listener>
 			<name>Listerner2</name>
 			<port>14071</port>
-			<command>c:/temp/echo.bat</command>
+			<command>cmd /c start /wait c:/temp/echo.bat</command>
 		</listener>
 	</listeners>
 	<monitors>
@@ -18,7 +18,7 @@
 			<refreshDelay>5000</refreshDelay>
 			<timeout>5000</timeout>
 			<address>192.168.1.1</address>
-			<command>c:/temp/echo.bat</command>
+			<command>cmd /c start /wait c:/temp/echo.bat</command>
 		</monitor>
 	</monitors>
 </config>

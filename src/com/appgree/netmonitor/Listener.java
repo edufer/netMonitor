@@ -42,12 +42,15 @@ public class Listener implements Runnable {
 	}
 
 	private void executeCommand(String clientIp) throws IOException {
-		String command = String.format("\"%s\" \"%s\" %s", config.getCommandPath(), config.getName(), clientIp);
+		String command = String.format("%s \"%s\" %s", config.getCommandPath(), config.getName(), clientIp);
 		LOGGER.info("Executing command " + command);
+		final long start = System.currentTimeMillis();
 		Process p = Runtime.getRuntime().exec(command);
 		try {
 			p.waitFor();
 		} catch (InterruptedException e) {
 		}
+		final long end = System.currentTimeMillis();
+		LOGGER.info(String.format("Listener command %s took %dms", command, (end - start)));
 	}
 }
