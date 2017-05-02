@@ -1,6 +1,7 @@
 package com.appgree.netmonitor;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -29,8 +30,9 @@ public class Listener implements Runnable {
 				Socket clientSocket = serverSocket.accept();
 				String clientIp = clientSocket.getRemoteSocketAddress().toString();
 				LOGGER.error("Waking up listener " + config.getName() + " from ip " + clientIp);
+				String inputData = readInput(clientSocket, clientIp);
 				clientSocket.close();
-				executeCommand(clientIp);
+				executeCommand(clientIp, inputData);
 			} catch (IOException e) {
 				LOGGER.error(String.format("Error processing listening cycle name = %s. Retrying in 5s...", config.getName()), e);
 				try {
@@ -41,8 +43,26 @@ public class Listener implements Runnable {
 		}
 	}
 
-	private void executeCommand(String clientIp) throws IOException {
-		String command = String.format("%s \"%s\" %s", config.getCommandPath(), config.getName(), clientIp);
+	private String readInput(Socket clientSocket, String clientIp) throws IOException {
+		InputStream input = clientSocket.getInputStream();
+		StringBuffer buffer = new StringBuffer();
+		if (input == null) {
+			LOGGER.error("Listener " + config.getName() + " from ip " + clientIp + " no valid input stream");
+			return "";
+		}
+		byte inputBytes[] = new byte[256];
+		for (;;) {
+			final int readed = input.read(inputBytes, 0, inputBytes.length);
+			if (readed < 0) {
+				break;
+			}
+			buffer.append(new String(inputBytes, 0, readed));
+		}
+		return buffer.toString();
+	}
+
+	private void executeCommand(String clientIp, String inputData) throws IOException {
+		String command = String.format("%s \"%s\" %s \"%s\"", config.getCommandPath(), config.getName(), clientIp, inputData);
 		LOGGER.info("Executing command " + command);
 		final long start = System.currentTimeMillis();
 		Process p = Runtime.getRuntime().exec(command);
