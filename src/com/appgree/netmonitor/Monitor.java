@@ -52,7 +52,7 @@ public class Monitor implements Runnable {
 	}
 
 	private void executeCommand() throws IOException {
-		String command = String.format("\"%s\" \"%s\" %s", config.getCommandPath(), config.getName(), config.getAddress());
+		String command = String.format("%s \"%s\" %s", config.getCommandPath(), config.getName(), config.getAddress());
 		LOGGER.info("Executing command " + command);
 		final long start = System.currentTimeMillis();
 		Process p = Runtime.getRuntime().exec(command);
