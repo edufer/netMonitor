@@ -11,13 +11,17 @@ public class NetMonitor {
 	
 	private Configuration configuration;
 	
+	private static String VERSION = "1.1.0";
+	
 	private ArrayList<Listener> listeners = new ArrayList<>();
 	private ArrayList<Monitor> monitors = new ArrayList<>();
 
 	public static void main(String[] args) {
 		
 		if (args.length != 1) {
-			LOGGER.error("Invalid number of arguments. Please enter the configuration file path");
+			final String format = String.format("Version %s%sPlease enter the configuration file path", VERSION, "%s");
+			System.out.println(String.format(format, "\n"));
+			LOGGER.error(String.format(format, " "));
 			System.exit(1);
 			return;
 		}
