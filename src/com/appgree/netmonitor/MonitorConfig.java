@@ -10,12 +10,14 @@ public class MonitorConfig {
 	private int timeout;
 	private String commandPath;
 	private long refreshDelay;
+	private int nPackets;
 	private String address;
 
-	public MonitorConfig(String name, long refreshDelay, int timeout, String address, String commandPath) {
+	public MonitorConfig(String name, long refreshDelay, int timeout, int nPackets, String address, String commandPath) {
 		this.name = name;
 		this.timeout = timeout;
 		this.refreshDelay = refreshDelay;
+		this.nPackets = nPackets;
 		this.commandPath = commandPath;
 		this.address = address;
 		LOGGER.info(String.format("Loading monitor name=%s timeout=%d address=%s command=%s", name, timeout, address, commandPath));
@@ -54,6 +56,13 @@ public class MonitorConfig {
 	 */
 	public String getAddress() {
 		return address;
+	}
+
+	/**
+	 * @return the nPackets
+	 */
+	public int getNPackets() {
+		return nPackets;
 	}
 
 }

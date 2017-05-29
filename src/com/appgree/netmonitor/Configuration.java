@@ -67,6 +67,7 @@ public class Configuration {
 			int timeout = -1;
 			String address = null;
 			String commandPath = null;
+			int nPackets = -1;
 			for (int j=0; j<entries.getLength(); ++j) {
 				Node entry = entries.item(j);
 				String nodeName = entry.getNodeName();
@@ -85,12 +86,18 @@ public class Configuration {
 				else if (nodeName.equals("command")) {
 					commandPath = entry.getTextContent();
 				}
+				else if (nodeName.equals("nPackets")) {
+					nPackets = Integer.valueOf(entry.getTextContent());
+				}
 			}
 			if (refreshDelay == -1) {
 				throw new Exception("Missing monitor refresh delay entry in configuration");
 			}
 			if (timeout == -1) {
 				throw new Exception("Missing monitor timeout entry in configuration");
+			}
+			if (nPackets == -1) {
+				throw new Exception("Missing monitor nPackets entry in configuration");
 			}
 			if (name == null) {
 				throw new Exception("Missing monitor name entry in configuration");
@@ -102,12 +109,12 @@ public class Configuration {
 				throw new Exception("Missing monitor commandPath entry in configuration");
 			}
 			
-			addMonitor(name, refreshDelay, timeout, address, commandPath);
+			addMonitor(name, refreshDelay, timeout, nPackets, address, commandPath);
 		}
 	}
 
-	private void addMonitor(String name, long refreshDelay, int timeout, String address, String commandPath) {
-		monitors.add(new MonitorConfig(name, refreshDelay, timeout, address, commandPath));
+	private void addMonitor(String name, long refreshDelay, int timeout, int nPackets, String address, String commandPath) {
+		monitors.add(new MonitorConfig(name, refreshDelay, timeout, nPackets, address, commandPath));
 	}
 
 	/**

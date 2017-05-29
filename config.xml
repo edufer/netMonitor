@@ -15,8 +15,9 @@
 	<monitors>
 		<monitor>
 			<name>Monitor1</name>
-			<refreshDelay>5000</refreshDelay>
-			<timeout>5000</timeout>
+			<refreshDelay>1000</refreshDelay>
+			<timeout>20</timeout>
+			<nPackets>5</nPackets>
 			<address>192.168.1.1</address>
 			<command>cmd /c start /wait c:/temp/echo.bat</command>
 		</monitor>

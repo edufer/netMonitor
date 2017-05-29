@@ -30,12 +30,24 @@ public class Monitor implements Runnable {
 
 		for (;;) {
 			try {
-				boolean isReachable = inet.isReachable(config.getTimeout());
-				if (!isReachable) {
+				boolean found = false;
+				for (int i=0; i<this.config.getNPackets(); ++i) {
+					try {
+						boolean isReachable = inet.isReachable(config.getTimeout());
+						if (isReachable) {
+							found = true;
+							break;
+						}
+					} catch (Exception e) {
+						LOGGER.error("Error checking isReachable. Ignoring packet", e);
+					}
+				}
+				
+				if (!found) {
 					LOGGER.error(String.format("Unreachable node detected %s", config.getAddress()));
 					executeCommand();
 				}
-				
+
 				// waits for next cycle
 				try {
 					Thread.sleep(config.getRefreshDelay());

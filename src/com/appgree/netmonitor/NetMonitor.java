@@ -11,7 +11,7 @@ public class NetMonitor {
 	
 	private Configuration configuration;
 	
-	private static String VERSION = "1.1.0";
+	private static String VERSION = "1.2.0";
 	
 	private ArrayList<Listener> listeners = new ArrayList<>();
 	private ArrayList<Monitor> monitors = new ArrayList<>();
